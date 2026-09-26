@@ -1,0 +1,16 @@
+# Entorno y secretos
+.env
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Lo que genera el correr el proyecto
+checkpoints.sqlite
+*.sqlite
+vectorstore/
+.ipynb_checkpoints/
