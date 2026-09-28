@@ -1,9 +1,9 @@
-"""nodes.py — los nodos que envuelven a los especialistas y el de la síntesis final.
+"""nodes.py: los nodos que envuelven a los especialistas y el de la síntesis final.
 
 Dos decisiones que se explican en el README:
 
 1. CONTEXTO ACOTADO (anti "Contaminación de Contexto"): a cada especialista le paso solo
-   el ÚLTIMO mensaje, que es la instrucción puntual — no el historial completo. Si le
+   el ÚLTIMO mensaje, que es la instrucción puntual, no el historial completo. Si le
    mandara toda la conversación, el especialista tendría que adivinar qué parte le toca.
 2. Cada nodo devuelve su aporte al estado compartido (`contribuciones`) y suma un paso:
    así el supervisor puede ver quién aportó qué y el corte por pasos tiene con qué contar.

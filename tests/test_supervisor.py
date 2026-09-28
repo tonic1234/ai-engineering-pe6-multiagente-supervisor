@@ -1,4 +1,4 @@
-"""test_supervisor.py — el cerebro del sistema.
+"""test_supervisor.py: el cerebro del sistema.
 
 Lo que se prueba:
 - la decisión del supervisor es ESTRUCTURADA (un objeto con `next` limitado a los

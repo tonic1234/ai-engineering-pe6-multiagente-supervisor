@@ -1,4 +1,4 @@
-"""rag.py — el sistema de recuperación que usan los agentes como "fuente externa".
+"""rag.py: el sistema de recuperación que usan los agentes como "fuente externa".
 
 Es el mismo camino de la pre-entrega 4 y lo reutilizo acá a propósito: el hilo del curso
 es que cada módulo se apoye en el anterior. Entonces:

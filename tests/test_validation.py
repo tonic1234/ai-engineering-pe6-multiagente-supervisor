@@ -1,4 +1,4 @@
-"""test_validation.py — el nodo de Validation.
+"""test_validation.py: el nodo de Validation.
 
 La consigna pide "un nodo de Validation o que el Supervisor tenga una rúbrica": acá están
 las dos cosas, y la parte automática se prueba sin LLM.
@@ -10,7 +10,7 @@ calculadora). Así el flujo no depende de la buena voluntad del modelo para cerr
 
 El caso del aporte del analista "sin cuenta" no es inventado: apareció en la primera
 corrida real contra Gemini, cuando se le pidió al analista que buscara y contestó que eso
-no era su trabajo — y ese texto igual cerraba el flujo.
+no era su trabajo, y ese texto igual cerraba el flujo.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""test_state.py — el estado compartido.
+"""test_state.py: el estado compartido.
 
 Lo que se prueba: que las contribuciones de los especialistas se ACUMULEN en vez de
 pisarse. Es justo el punto que pide la consigna ("evitar la pérdida de contexto en la

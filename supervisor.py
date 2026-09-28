@@ -1,4 +1,4 @@
-"""supervisor.py — el nodo Supervisor: el router que decide quién trabaja y cuándo se cierra.
+"""supervisor.py: el nodo Supervisor: el router que decide quién trabaja y cuándo se cierra.
 
 Tres cosas que vale la pena mirar:
 
@@ -172,7 +172,7 @@ def _corregir_decision(state, decision: DecisionSupervisor) -> DecisionSuperviso
     faltantes = informe["faltantes"]
 
     # Si la rúbrica YA se cumple, no hay nada más que delegar: se cierra. Sin esta regla el
-    # supervisor podía pedir "un poco más" después de tener todo lo necesario — pasó en una
+    # supervisor podía pedir "un poco más" después de tener todo lo necesario. Pasó en una
     # corrida real: tres rondas de investigación de más para una pregunta que ya estaba
     # respondida. El validador es el que manda, también para cerrar.
     if informe["suficiente"]:

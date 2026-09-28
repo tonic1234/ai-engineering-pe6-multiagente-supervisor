@@ -1,4 +1,4 @@
-"""graph.py — el armado del grafo (la topología jerárquica).
+"""graph.py: el armado del grafo (la topología jerárquica).
 
     START ──▶ supervisor ──┬──▶ investigador ──┐
               ▲            ├──▶ analista ──────┤   (los especialistas SIEMPRE vuelven

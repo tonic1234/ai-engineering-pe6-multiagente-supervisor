@@ -1,4 +1,4 @@
-"""conftest.py — deja el entorno listo para que los tests corran SIN claves y SIN red.
+"""conftest.py: deja el entorno listo para que los tests corran SIN claves y SIN red.
 
 Los tests no llaman a Gemini ni a Pinecone: inyectan dobles (fakes) en los nodos. Igual
 fijamos valores dummy para que cualquier import que lea el entorno no explote.

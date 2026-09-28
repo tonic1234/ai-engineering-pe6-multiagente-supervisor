@@ -1,4 +1,4 @@
-"""validation.py — el nodo de Validation (la parte que decide si ya se puede cerrar).
+"""validation.py: el nodo de Validation (la parte que decide si ya se puede cerrar).
 
 La consigna pide "un nodo de Validation o que el Supervisor tenga una rúbrica
 personalizada". Acá están las dos, y a propósito:
@@ -18,7 +18,7 @@ sea VERIFICABLE, no una promesa:
 
 Esto salió de la primera corrida real: el supervisor le mandó al analista una instrucción
 de búsqueda ("buscá y transcribí la política"), el analista contestó que eso no era su
-trabajo y ese texto —sin ninguna cuenta— igual pasaba como "aporte válido". Con la regla
+trabajo y ese texto, sin ninguna cuenta, igual pasaba como "aporte válido". Con la regla
 de arriba, ese caso vuelve al supervisor y el resultado final sale de la herramienta, no
 de la imaginación del modelo.
 """

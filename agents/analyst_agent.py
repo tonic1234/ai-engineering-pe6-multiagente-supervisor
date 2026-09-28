@@ -1,4 +1,4 @@
-"""agents/analyst_agent.py — el especialista en análisis/cómputo.
+"""agents/analyst_agent.py: el especialista en análisis/cómputo.
 
 Es el segundo dominio del equipo, y el que hace que la consulta de la demo necesite a los
 dos: el investigador trae los números de la política, y el analista los convierte en el

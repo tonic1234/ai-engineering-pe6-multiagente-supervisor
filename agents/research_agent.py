@@ -1,4 +1,4 @@
-"""agents/research_agent.py — el especialista en investigación.
+"""agents/research_agent.py: el especialista en investigación.
 
 Es el agente que va a buscar los datos a la fuente externa. Sus características:
 

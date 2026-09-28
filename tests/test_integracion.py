@@ -1,4 +1,4 @@
-"""test_integracion.py — el test que vale: el flujo completo, de punta a punta.
+"""test_integracion.py: el test que vale: el flujo completo, de punta a punta.
 
 Corre el grafo REAL (el mismo que se usa con Gemini) pero con dobles en los tres lugares
 donde habría red: el supervisor, los dos especialistas y el LLM de la síntesis.

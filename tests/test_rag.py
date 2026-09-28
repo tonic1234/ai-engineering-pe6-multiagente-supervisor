@@ -1,4 +1,4 @@
-"""test_rag.py — el dataset y el recuperador.
+"""test_rag.py: el dataset y el recuperador.
 
 Dos cosas se prueban acá y no en otro lado:
 

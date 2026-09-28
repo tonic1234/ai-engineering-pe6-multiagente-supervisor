@@ -1,13 +1,13 @@
-"""tools.py — las herramientas acotadas de cada especialista.
+"""tools.py: las herramientas acotadas de cada especialista.
 
 La consigna pide "al menos una herramienta funcional" por agente y que cada uno tenga
 herramientas ACOTADAS (que el investigador no calcule y el analista no investigue).
 
 Dos herramientas, entonces:
 
-1. `buscar_en_politicas_internas` — la del investigador. Consulta el vector DB de las
+1. `buscar_en_politicas_internas`: la del investigador. Consulta el vector DB de las
    pre-entregas anteriores (Pinecone/BM25) y devuelve los fragmentos CON su fuente.
-2. `calculadora` — la del analista. Y acá está el detalle que importa: el argumento viene
+2. `calculadora`: la del analista. Y acá está el detalle que importa: el argumento viene
    de un LLM, o sea que es texto de un tercero. Pasarle eso a `eval()` sería regalar la
    máquina (un `__import__('os').system(...)` alcanza). Por eso parseo la expresión con
    `ast` y solo habilito operaciones aritméticas: nada de nombres, llamadas ni atributos.

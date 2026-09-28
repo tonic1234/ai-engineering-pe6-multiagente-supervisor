@@ -1,4 +1,4 @@
-"""construir_notebook.py — genera demo_flujo.ipynb y lo EJECUTA (con salidas reales).
+"""construir_notebook.py: genera demo_flujo.ipynb y lo EJECUTA (con salidas reales).
 
 La consigna pide "un video corto o notebook que demuestre el flujo de delegación". Elegí el
 notebook: se puede correr de nuevo y deja las salidas a la vista, sin depender de un video.
@@ -110,13 +110,16 @@ trabajó cada nodo, con la decisión y la instrucción de cada paso.
 
 MARKDOWN_SIMPLE = """## 6. La consulta que NO necesita cuenta
 
-Esta pregunta se responde con el dato de la política. El punto es ver dos cosas:
+Esta pregunta se responde con el dato de la política, sin cuentas. El punto es ver dos cosas:
 
 - que la **rúbrica se adapta**: el validador exige el dominio del análisis sólo cuando la
   pregunta pide una cuenta (si no, el flujo nunca cerraría);
-- que el supervisor **vuelve a delegar** al investigador con otra instrucción cuando falta la
-  segunda parte de la pregunta, y recién después cierra. Son iteraciones reales del ciclo, no
-  una sola vuelta.
+- que el supervisor **cierra apenas tiene el dato**, sin llamar al analista al pedo.
+
+La **re-delegación** (volver al mismo especialista con otra instrucción cuando la primera
+respuesta no alcanza) está implementada y la cubren los tests de `test_supervisor.py` y
+`test_integracion.py`. En esta corrida no hizo falta porque el investigador contestó las dos
+partes de la pregunta de una sola vez.
 """
 
 MARKDOWN_CIERRE = """## 7. Qué demuestra esto

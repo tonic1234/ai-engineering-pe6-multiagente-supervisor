@@ -1,4 +1,4 @@
-"""ingest.py — puebla el índice de Pinecone con los documentos de data/.
+"""ingest.py: puebla el índice de Pinecone con los documentos de data/.
 
 Por qué este script existe (y no sólo el retriever): si el índice y los .txt de data/ se
 separan, el sistema recupera fragmentos que ya no están en el dataset. Es un problema real:

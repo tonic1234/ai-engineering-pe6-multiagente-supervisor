@@ -1,4 +1,4 @@
-"""state.py — el estado compartido del orquestador.
+"""state.py: el estado compartido del orquestador.
 
 La consigna pide un esquema que permita "rastrear qué agente contribuyó con qué
 información, evitando la pérdida de contexto en la comunicación asíncrona".

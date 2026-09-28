@@ -1,4 +1,4 @@
-"""main.py — la demo de punta a punta del orquestador.
+"""main.py: la demo de punta a punta del orquestador.
 
 Corre DOS consultas para mostrar que el equipo se arma según el pedido:
 
@@ -83,8 +83,8 @@ def correr(pregunta: str = PREGUNTA_DEMO, app=None, archivo_traza: str = ARCHIVO
     """Corre el grafo UNA vez y devuelve (estado_final, traza).
 
     El flujo se lee del stream de `updates` y el estado final del stream de `values`, en la
-    MISMA corrida. (La primera versión hacía dos corridas —una para imprimir y otra para la
-    respuesta— y el modelo no es determinista al 100%: la traza que mostraba y la respuesta
+    MISMA corrida. (La primera versión hacía dos corridas, una para imprimir y otra para la
+    respuesta, y el modelo no es determinista al 100%: la traza que mostraba y la respuesta
     que guardaba podían no coincidir. Con una sola corrida, lo que se ve es lo que pasó.)
     """
 

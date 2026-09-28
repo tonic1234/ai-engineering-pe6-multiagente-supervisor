@@ -1,4 +1,4 @@
-"""test_graph.py — el armado del grafo.
+"""test_graph.py: el armado del grafo.
 
 Se prueban los dos mapeos que son fuente clásica de errores en LangGraph:
 - la decisión del supervisor (que habla en nombres de agentes, o dice FINISH) tiene que

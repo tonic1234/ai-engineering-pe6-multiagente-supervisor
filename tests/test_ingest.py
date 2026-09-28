@@ -1,4 +1,4 @@
-"""test_ingest.py — el script que puebla el índice.
+"""test_ingest.py: el script que puebla el índice.
 
 No toca la red: prueba las dos cosas que pueden romper el índice sin que nadie se entere.
 

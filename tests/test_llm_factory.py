@@ -1,4 +1,4 @@
-"""test_llm_factory.py — la fábrica del modelo y el traductor de errores.
+"""test_llm_factory.py: la fábrica del modelo y el traductor de errores.
 
 Dos cosas que salieron de las devoluciones anteriores:
 

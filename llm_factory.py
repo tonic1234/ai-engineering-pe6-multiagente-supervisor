@@ -1,4 +1,4 @@
-"""llm_factory.py — el modelo, elegido por variable de entorno.
+"""llm_factory.py: el modelo, elegido por variable de entorno.
 
 Misma idea que en las pre-entregas anteriores: el código de negocio no importa SDKs. Acá
 se construye el chat model según LLM_PROVIDER (gemini por defecto, que tiene free tier y

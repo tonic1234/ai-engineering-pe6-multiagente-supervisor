@@ -1,4 +1,4 @@
-"""test_nodes.py — los nodos que envuelven a los especialistas.
+"""test_nodes.py: los nodos que envuelven a los especialistas.
 
 Lo importante acá es la "Contaminación de Contexto" que nombra el enunciado: al
 especialista hay que pasarle la INSTRUCCIÓN puntual, no todo el historial. El test espía

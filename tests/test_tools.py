@@ -1,4 +1,4 @@
-"""test_tools.py — las herramientas de los especialistas.
+"""test_tools.py: las herramientas de los especialistas.
 
 Dos cosas que se prueban acá:
 
