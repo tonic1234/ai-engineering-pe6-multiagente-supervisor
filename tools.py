@@ -16,9 +16,12 @@ Dos herramientas, entonces:
 from __future__ import annotations
 
 import ast
+import logging
 import operator as op
 
 from langchain_core.tools import tool
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # El RAG se inyecta desde afuera (patrón chico pero clave): en producción es el
@@ -42,6 +45,9 @@ def get_rag():
         from rag import RAGSystem
 
         _rag = RAGSystem()
+        # Se informa el modo REAL del recuperador en la primera búsqueda: si alguien corre la
+        # demo sin Pinecone tiene que enterarse por pantalla, no por un resultado peor.
+        logger.info("herramienta de búsqueda lista: recuperador %s", getattr(_rag, "modo", "?"))
     return _rag
 
 

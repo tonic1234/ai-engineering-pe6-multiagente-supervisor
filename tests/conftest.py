@@ -19,6 +19,11 @@ if str(RAIZ) not in sys.path:
 os.environ.setdefault("GOOGLE_API_KEY", "test-key")
 os.environ.setdefault("LLM_PROVIDER", "gemini")
 
+# La suite promete correr SIN claves: saco la de Pinecone aunque esté en el entorno, así
+# ninguna prueba puede terminar pegándole a la nube por accidente (el repo no la necesita
+# para testear: el recuperador tiene dobles).
+os.environ.pop("PINECONE_API_KEY", None)
+
 
 @pytest.fixture
 def estado_base():

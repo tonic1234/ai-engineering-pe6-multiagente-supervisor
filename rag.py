@@ -88,7 +88,14 @@ def build_hybrid_retriever(k: int = TOP_K):
     retriever_bm25.k = k
 
     if not os.getenv("PINECONE_API_KEY"):
-        logger.info("Recuperador en modo LÉXICO (sin Pinecone configurado)")
+        # Antes esto era un logger.info y pasaba desapercibido: en la devolución de la
+        # pre-entrega 4 me marcaron justamente que degradar en silencio "puede enmascarar
+        # errores de configuración". Ahora es warning y la demo imprime el modo real.
+        logger.warning(
+            "SIN PINECONE_API_KEY: recuperador en modo LÉXICO (solo BM25, sin la pata "
+            "vectorial). El flujo funciona, pero la búsqueda es peor: completá la clave en "
+            ".env para correr en modo híbrido."
+        )
         return retriever_bm25
 
     try:
@@ -103,12 +110,26 @@ def build_hybrid_retriever(k: int = TOP_K):
     return EnsembleRetriever(retrievers=[retriever_bm25, retriever_vectorial], weights=[0.5, 0.5])
 
 
+def nombre_modo(retriever) -> str:
+    """Nombre legible del modo de recuperación, leído del retriever real."""
+
+    tipo = type(retriever).__name__
+    if tipo == "EnsembleRetriever":
+        return "híbrido (BM25 + vectorial sobre Pinecone)"
+    if tipo == "BM25Retriever":
+        return "léxico (solo BM25, sin Pinecone)"
+    return f"personalizado ({tipo})"
+
+
 class RAGSystem:
     """Envoltorio simple: `obtener_top_k(pregunta)` devuelve los fragmentos con su fuente."""
 
     def __init__(self, retriever=None, k: int = TOP_K) -> None:
         self.retriever = retriever or build_hybrid_retriever(k)
         self.k = k
+        # El modo se lee del retriever que REALMENTE quedó armado (no de lo que pide el .env):
+        # así la demo puede decir en qué modo corrió sin depender de una suposición.
+        self.modo = nombre_modo(self.retriever)
 
     def obtener_top_k(self, query: str) -> List[Dict]:
         docs: List[Document] = self.retriever.invoke(query)[: self.k]

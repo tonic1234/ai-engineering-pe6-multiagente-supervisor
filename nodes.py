@@ -16,7 +16,7 @@ from typing import Optional
 
 from langchain_core.messages import AIMessage, HumanMessage
 
-from llm_factory import texto
+from llm_factory import mensaje_de_error, texto
 from state import contribucion
 
 
@@ -81,8 +81,16 @@ def _correr_especialista(agente, state, nombre: str) -> dict:
 
     contenido = "\n\n".join(bloques)
 
-    resultado = agente.invoke({"messages": [HumanMessage(content=contenido)]})
-    respuesta = texto(resultado["messages"][-1])
+    # Un especialista que se cae no puede tumbar el grafo: si la llamada al modelo falla, el
+    # aporte vuelve marcado como ERROR (con el mensaje traducido por `mensaje_de_error`, no
+    # con un volcado de excepción) y el supervisor decide si lo manda de nuevo o cierra. Es
+    # el mismo camino que ya usaba el validador para detectar un aporte inservible.
+    try:
+        resultado = agente.invoke({"messages": [HumanMessage(content=contenido)]})
+    except Exception as exc:  # noqa: BLE001 - se traduce a un mensaje legible, ver arriba
+        respuesta = f"ERROR: {mensaje_de_error(exc)}"
+    else:
+        respuesta = texto(resultado["messages"][-1])
 
     return {
         "messages": [AIMessage(content=respuesta, name=nombre)],
