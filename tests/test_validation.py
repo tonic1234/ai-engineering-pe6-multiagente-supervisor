@@ -126,3 +126,52 @@ def test_el_nodo_devuelve_el_campo_validacion():
     assert actualizacion["validacion"]["suficiente"] is True
     assert actualizacion["task_completed"] is True
     assert actualizacion["reintentos"] == 1
+
+
+# ---------------------------------------------------------------------------
+# La rúbrica se adapta a la pregunta
+# ---------------------------------------------------------------------------
+# El validador exige el dominio del análisis SÓLO si la pregunta pide una cuenta. Sin esta
+# regla, una consulta que se responde con el dato de la política (sin cuentas) nunca podía
+# cerrar: el validador iba a seguir pidiendo un cálculo que nadie pidió, y el flujo daba
+# vueltas hasta agotar los pasos.
+
+
+def _estado_con_pregunta(pregunta: str, contribuciones: list) -> dict:
+    from langchain_core.messages import HumanMessage
+
+    return {"messages": [HumanMessage(content=pregunta)], "contribuciones": contribuciones, "pasos": 1}
+
+
+def test_si_la_pregunta_no_pide_cuenta_no_exige_al_analista():
+    estado = _estado_con_pregunta(
+        "¿Se puede tomar vacaciones en enero y qué pasa con los días que quedan sin usar al cerrar el año?",
+        [contrib("investigador", APORTE_INVESTIGADOR)],
+    )
+
+    informe = validar_estado(estado)
+
+    assert informe["dominios_exigidos"] == ["investigador"]
+    assert informe["suficiente"] is True
+    assert informe["faltantes"] == []
+
+
+def test_si_la_pregunta_pide_cuenta_el_analista_es_obligatorio():
+    estado = _estado_con_pregunta(
+        "¿Cuántos días de vacaciones juntó en total un empleado con 12 años de antigüedad?",
+        [contrib("investigador", APORTE_INVESTIGADOR)],
+    )
+
+    informe = validar_estado(estado)
+
+    assert informe["dominios_exigidos"] == ["investigador", "analista"]
+    assert informe["suficiente"] is False
+    assert informe["faltantes"] == ["analista"]
+
+
+def test_sin_pregunta_en_el_estado_exige_los_dos_dominios():
+    """Sin información, conservador: no se da nada por terminado."""
+
+    from validation import dominios_exigidos
+
+    assert dominios_exigidos({"contribuciones": []}) == ["investigador", "analista"]

@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from llm_factory import texto
 from validation import validar_estado
@@ -86,7 +86,22 @@ class DecisionSupervisor(BaseModel):
             "hacer exactamente). Se ignora si next es FINISH."
         ),
     )
-    razon: str = Field(description="Justificación breve de la decisión")
+    razon: str = Field(
+        min_length=5,
+        description="Justificación breve de la decisión (por qué ese agente y no otro)",
+    )
+
+    # Validación explícita, no decorativa: una delegación SIN instrucción deja al especialista
+    # adivinando qué hacer (y así fue como el analista terminó "buscando"). Si el supervisor
+    # delega, tiene que decir qué y con qué alcance.
+    @model_validator(mode="after")
+    def _delegacion_con_instruccion(self):
+        if self.next != "FINISH" and len(self.instruccion.strip()) < 10:
+            raise ValueError(
+                f"Falta la instrucción para {self.next}: tiene que explicar qué hacer, en una "
+                "o dos frases (mínimo 10 caracteres)."
+            )
+        return self
 
 
 class Supervisor:
@@ -155,6 +170,16 @@ def _corregir_decision(state, decision: DecisionSupervisor) -> DecisionSuperviso
 
     informe = validar_estado(state)
     faltantes = informe["faltantes"]
+
+    # Si la rúbrica YA se cumple, no hay nada más que delegar: se cierra. Sin esta regla el
+    # supervisor podía pedir "un poco más" después de tener todo lo necesario — pasó en una
+    # corrida real: tres rondas de investigación de más para una pregunta que ya estaba
+    # respondida. El validador es el que manda, también para cerrar.
+    if informe["suficiente"]:
+        return DecisionSupervisor(
+            next="FINISH",
+            razon="La rúbrica ya se cumple: no hay nada más que delegar.",
+        )
 
     if decision.next == "FINISH":
         # Cerrar sin aportes (por ejemplo una pregunta que no necesita al equipo) es válido:

@@ -56,7 +56,14 @@ def estado(pasos=0, contribuciones=None):
 
 
 def test_decision_estructurada_mapea_a_nodos_reales():
-    decision = DecisionSupervisor(next="analista", razon="ya tengo el dato, falta el cálculo")
+    # Ojo con el fixture: la decisión ahora exige instrucción cuando delega (ver
+    # test_una_delegacion_sin_instruccion_no_es_valida). Es a propósito: una delegación sin
+    # instrucción deja al especialista adivinando qué hacer.
+    decision = DecisionSupervisor(
+        next="analista",
+        instruccion="Calculá el total de días con los números que están en el contexto.",
+        razon="ya tengo el dato, falta el cálculo",
+    )
     supervisor = Supervisor(llm=LLMFalso(decision))
 
     resultado = supervisor.decidir(estado())
@@ -183,7 +190,14 @@ def test_si_quiere_cerrar_sin_ningun_aporte_lo_deja_cerrar():
     assert actualizacion["task_completed"] is True
 
 
-def test_con_los_dos_dominios_cubiertos_deja_la_decision_como_esta():
+def test_con_los_dominios_cubiertos_el_guardia_cierra():
+    """Si la rúbrica ya se cumple, el guardia no deja seguir delegando.
+
+    Aprendido en una corrida real del notebook: con los dos aportes verificables ya en el
+    estado, el supervisor pidió tres rondas más de investigación "por las dudas". El validador
+    es determinista y manda: si está suficiente, se cierra.
+    """
+
     from supervisor import nodo_supervisor
 
     decision = DecisionSupervisor(next="analista", instruccion="revisá la cuenta", razon="refinar")
@@ -198,4 +212,38 @@ def test_con_los_dos_dominios_cubiertos_deja_la_decision_como_esta():
 
     actualizacion = nodo_supervisor(estado_completo, supervisor=supervisor)
 
-    assert actualizacion["next_agent"] == "analista"
+    assert actualizacion["next_agent"] == "FINISH"
+    assert actualizacion["task_completed"] is True
+
+
+# ---------------------------------------------------------------------------
+# La decisión se valida (no es un diccionario suelto)
+# ---------------------------------------------------------------------------
+# De la devolución de la pre-entrega 1: "verificá que los esquemas Pydantic usen Field ... con
+# mensajes de error personalizados en cada parámetro". Acá el esquema exige, además, que una
+# delegación venga con su instrucción: el analista terminó "buscando" justamente porque el
+# supervisor podía delegar sin decir qué hacer.
+
+
+def test_una_delegacion_sin_instruccion_no_es_valida():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError) as error:
+        DecisionSupervisor(next="analista", instruccion="", razon="le toca calcular")
+
+    assert "Falta la instrucción para analista" in str(error.value)
+
+
+def test_finish_no_necesita_instruccion():
+    decision = DecisionSupervisor(next="FINISH", razon="la rúbrica se cumple")
+
+    assert decision.instruccion == ""
+
+
+def test_la_razon_tiene_minimo():
+    import pytest
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        DecisionSupervisor(next="FINISH", razon="ok")

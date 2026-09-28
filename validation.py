@@ -25,6 +25,7 @@ de la imaginación del modelo.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List
 
 # Los dos dominios que exige la consigna. El orden importa para el informe: primero
@@ -39,6 +40,43 @@ CRITERIOS = {
 
 # Marcas de que un aporte NO sirve: es un error devuelto por la herramienta.
 MARCAS_DE_ERROR = ["ERROR:", "Error al calcular", "No se encontró"]
+
+# Si la pregunta pide una cuenta, el analista es obligatorio. Si no la pide, exigirlo sería
+# pedirle al equipo un trabajo que no corresponde (y el flujo no cerraría nunca).
+PATRON_PEDIDO_DE_CUENTA = re.compile(
+    r"\d|cu[aá]nt|total|sum[ae]r|promedi|porcentaje|calcul|multiplic|divid|prorrat",
+    re.IGNORECASE,
+)
+
+
+def _pregunta(state: Dict[str, Any]) -> str:
+    """La pregunta original del usuario, si está en el estado."""
+
+    mensajes = state.get("messages") or []
+    if not mensajes:
+        return ""
+    primero = mensajes[0]
+    contenido = getattr(primero, "content", primero)
+    if isinstance(contenido, list):  # Gemini puede devolver bloques
+        contenido = "".join(b.get("text", "") if isinstance(b, dict) else str(b) for b in contenido)
+    return str(contenido)
+
+
+def dominios_exigidos(state: Dict[str, Any]) -> List[str]:
+    """Qué dominios exige la rúbrica para ESTA pregunta.
+
+    - El investigador siempre: cualquier dato de la empresa sale de las políticas internas.
+    - El analista sólo si la pregunta pide una cuenta (un número, un total, un prorrateo).
+
+    Sin pregunta en el estado se exigen los dos (criterio conservador: sin información, no
+    se declara nada por terminado).
+    """
+
+    exigidos = ["investigador"]
+    pregunta = _pregunta(state)
+    if not pregunta or PATRON_PEDIDO_DE_CUENTA.search(pregunta):
+        exigidos.append("analista")
+    return exigidos
 
 
 def _aporte_util(dominio: str, aporte: str) -> bool:
@@ -63,11 +101,15 @@ def validar_estado(state: Dict[str, Any]) -> Dict[str, Any]:
         if any(_aporte_util(dominio, a) for a in aportes):
             dominios_con_aporte.append(dominio)
 
-    faltantes = [d for d in DOMINIOS if d not in dominios_con_aporte]
+    exigidos = dominios_exigidos(state)
+    faltantes = [d for d in exigidos if d not in dominios_con_aporte]
     suficiente = not faltantes
 
     if suficiente:
-        motivo = "Los dos dominios aportaron y ninguno devolvió error: se puede sintetizar."
+        motivo = (
+            f"Los dominios exigidos ({', '.join(exigidos)}) aportaron de forma verificable y "
+            "ninguno devolvió error: se puede sintetizar."
+        )
     elif not contribuciones:
         motivo = "Todavía no corrió ningún especialista."
     else:
@@ -78,6 +120,7 @@ def validar_estado(state: Dict[str, Any]) -> Dict[str, Any]:
         "suficiente": suficiente,
         "faltantes": faltantes,
         "dominios_con_aporte": dominios_con_aporte,
+        "dominios_exigidos": exigidos,
         "criterios": CRITERIOS,
         "motivo": motivo,
     }

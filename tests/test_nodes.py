@@ -112,3 +112,52 @@ def test_la_sintesis_arma_la_respuesta_con_los_aportes():
     assert "245" in prompt  # aporte del analista
     assert actualizacion["messages"][0].content == "RESPUESTA FINAL"
     assert actualizacion["task_completed"] is True
+
+
+class AgenteQueSeCae:
+    """Especialista cuya llamada al modelo falla (cuota agotada, red caída...)."""
+
+    def __init__(self, excepcion):
+        self.excepcion = excepcion
+
+    def invoke(self, entrada):
+        raise self.excepcion
+
+
+def test_un_especialista_que_falla_no_tumba_el_grafo():
+    """Si el proveedor rechaza la llamada, el aporte vuelve como ERROR legible.
+
+    El grafo no se cae: el supervisor ve un aporte en error y puede volver a delegar (o
+    cerrar). El mensaje tiene que ser informativo, no un volcado de excepción.
+    """
+
+    agente = AgenteQueSeCae(type("ResourceExhausted", (Exception,), {})("cuota agotada"))
+
+    actualizacion = nodes.nodo_analista(estado_con_historial(), agente=agente)
+
+    aporte = actualizacion["contribuciones"][0]["aporte"]
+    assert aporte.startswith("ERROR:")
+    assert "cuota" in aporte
+    assert "ResourceExhausted" in aporte
+    assert actualizacion["pasos"] == estado_con_historial()["pasos"] + 1
+
+
+def test_el_error_de_un_especialista_no_cuenta_como_aporte_valido():
+    """Lo que el validador hace con ese aporte en error: lo deja como dominio sin cubrir."""
+
+    from validation import validar_estado
+
+    agente = AgenteQueSeCae(type("APIConnectionError", (Exception,), {})("sin red"))
+    actualizacion = nodes.nodo_analista(estado_con_historial(), agente=agente)
+
+    estado = estado_con_historial()
+    estado["contribuciones"] = actualizacion["contribuciones"]
+    # La pregunta pide una cuenta (el contexto de este test es el aporte del ANALISTA): sin
+    # eso la rúbrica no exige ese dominio y no habría nada que validar.
+    from langchain_core.messages import HumanMessage
+
+    estado["messages"] = [HumanMessage(content="¿Cuántos días de vacaciones en total?")]
+
+    informe = validar_estado(estado)
+    assert informe["suficiente"] is False
+    assert "analista" in informe["faltantes"]

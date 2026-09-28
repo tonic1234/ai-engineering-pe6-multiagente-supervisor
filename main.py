@@ -1,14 +1,18 @@
 """main.py — la demo de punta a punta del orquestador.
 
-Corre una consulta que obliga a usar LOS DOS dominios (un dato de las políticas internas
-+ una cuenta) y muestra el flujo de delegación paso a paso: quién decidió qué, a quién le
-pasó la tarea y con qué aporte volvió.
+Corre DOS consultas para mostrar que el equipo se arma según el pedido:
 
-Al final guarda la traza completa en `traza_ejecucion.json` (lo mismo que se ve por
-pantalla, pero en un archivo que queda en el repo como evidencia de la corrida).
+1. la consulta principal, que obliga a usar LOS DOS dominios (un dato de las políticas
+   internas + una cuenta) y muestra el flujo completo: investigador → analista → cierre;
+2. una consulta que se resuelve con UN SOLO dominio (no hay cuenta que hacer), donde el
+   supervisor cierra con el investigador y no llama al analista al pedo.
+
+En los dos casos se ve el flujo de delegación paso a paso (quién decidió qué, a quién le pasó
+la tarea y con qué aporte volvió) y la traza queda guardada en JSON, dentro del repo, como
+evidencia de la corrida.
 
 Uso:
-    python main.py                # corre la consulta de la demo
+    python main.py                # corre las dos consultas de la demo
     python main.py --topologia    # imprime el diagrama Mermaid del grafo y sale
     python main.py "otra pregunta"
 """
@@ -16,6 +20,7 @@ Uso:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 from datetime import datetime, timezone
@@ -31,7 +36,15 @@ PREGUNTA_DEMO = (
     "correspondieron en total a lo largo de esos 12 años?"
 )
 
+# Esta no pide ninguna cuenta: alcanza con el dato de las políticas. Sirve para ver que el
+# supervisor NO llama al analista cuando no hace falta (y que la rúbrica no lo exige).
+PREGUNTA_SIMPLE = (
+    "¿Se puede tomar vacaciones en enero y qué pasa con los días que quedan sin usar al "
+    "cerrar el año?"
+)
+
 ARCHIVO_TRAZA = "traza_ejecucion.json"
+ARCHIVO_TRAZA_SIMPLE = "traza_consulta_simple.json"
 
 
 def estado_inicial(pregunta: str) -> dict:
@@ -66,7 +79,7 @@ def _detalle_de_nodo(nodo: str, actualizacion: dict) -> str:
     return ""
 
 
-def correr(pregunta: str = PREGUNTA_DEMO, app=None):
+def correr(pregunta: str = PREGUNTA_DEMO, app=None, archivo_traza: str = ARCHIVO_TRAZA):
     """Corre el grafo UNA vez y devuelve (estado_final, traza).
 
     El flujo se lee del stream de `updates` y el estado final del stream de `values`, en la
@@ -116,20 +129,30 @@ def correr(pregunta: str = PREGUNTA_DEMO, app=None):
         f"rúbrica cumplida: {(traza['validacion'] or {}).get('suficiente')}"
     )
 
-    with open(ARCHIVO_TRAZA, "w", encoding="utf-8") as archivo:
+    with open(archivo_traza, "w", encoding="utf-8") as archivo:
         json.dump(traza, archivo, ensure_ascii=False, indent=2)
-    print(f"traza guardada en {ARCHIVO_TRAZA}")
+    print(f"traza guardada en {archivo_traza}")
 
     return resultado, traza
 
 
 def main() -> None:
+    # Sin esto, los avisos del recuperador (por ejemplo "estoy en modo léxico porque falta la
+    # clave") quedan invisibles y la demo parece andar igual de bien cuando no es así.
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
     if "--topologia" in sys.argv:
         print(diagrama_mermaid(build_app(solo_topologia=True)))
         return
 
     argumentos = [a for a in sys.argv[1:] if not a.startswith("-")]
-    correr(argumentos[0] if argumentos else PREGUNTA_DEMO)
+    if argumentos:
+        correr(argumentos[0])
+        return
+
+    correr(PREGUNTA_DEMO)
+    print("\n\n")
+    correr(PREGUNTA_SIMPLE, archivo_traza=ARCHIVO_TRAZA_SIMPLE)
 
 
 if __name__ == "__main__":
