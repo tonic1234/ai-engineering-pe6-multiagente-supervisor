@@ -3,11 +3,11 @@
   "pasos": [
     {
       "nodo": "supervisor",
-      "detalle": "decide -> investigador | instrucción: Buscá en las políticas internas de vacaciones cuántos días le corresponden a un colaborado"
+      "detalle": "decide -> investigador | instrucción: Buscá la política interna de vacaciones de la empresa que especifique los días correspondi"
     },
     {
       "nodo": "investigador",
-      "detalle": "[investigador] Según la política interna:\n\n- **Menos de 3 años de antigüedad:** 15 días hábiles de vacaciones por año calendario.\n- **Entre 3 y 8 años de antigüedad (3 años o más, y hasta 8 años):** 20 días hábiles.\n- **Más de 8 años d"
+      "detalle": "[investigador] [Fuente: politica_vacaciones.txt]\n- Menos de 3 años de antigüedad: 15 días hábiles de vacaciones por año calendario.\n- 3 años o más, y hasta 8 años de antigüedad: 20 días hábiles por año calendario.\n- Más de 8 años de an"
     },
     {
       "nodo": "supervisor",
@@ -19,37 +19,25 @@
     },
     {
       "nodo": "supervisor",
-      "detalle": "decide -> investigador | instrucción: Buscá en la política interna de vacaciones cuántos días hábiles le corresponden por año a "
-    },
-    {
-      "nodo": "investigador",
-      "detalle": "[investigador] «Los colaboradores con más de 8 años de antigüedad acceden a 25 días hábiles.»\n\n[Fuente: politica_vacaciones.txt]"
-    },
-    {
-      "nodo": "supervisor",
       "detalle": "decide -> FINISH"
     },
     {
       "nodo": "validacion",
-      "detalle": "suficiente=True | Los dos dominios aportaron y ninguno devolvió error: se puede sintetizar."
+      "detalle": "suficiente=True | Los dominios exigidos (investigador, analista) aportaron de forma verificable y ninguno devolvió error: se puede sintetizar."
     },
     {
       "nodo": "sintesis",
-      "detalle": "[supervisor] A lo largo de los 12 años, al colaborador le correspondieron en total **250 días hábiles** de vacaciones. \n\nEl desglose según la política interna es el siguiente:\n\n* **Primeros 2 años** (menos de 3 años de antigüedad): 2"
+      "detalle": "[supervisor] A lo largo de los 12 años, al colaborador le correspondieron en total **250 días hábiles de vacaciones**.\n\nEl cálculo se desglosa de la siguiente manera según la política de la empresa:\n\n* **2 años con menos de 3 de anti"
     }
   ],
   "contribuciones": [
     {
       "agente": "investigador",
-      "aporte": "Según la política interna:\n\n- **Menos de 3 años de antigüedad:** 15 días hábiles de vacaciones por año calendario.\n- **Entre 3 y 8 años de antigüedad (3 años o más, y hasta 8 años):** 20 días hábiles.\n- **Más de 8 años de antigüedad:** 25 días hábiles.\n\n[Fuente: politica_vacaciones.txt]"
+      "aporte": "[Fuente: politica_vacaciones.txt]\n- Menos de 3 años de antigüedad: 15 días hábiles de vacaciones por año calendario.\n- 3 años o más, y hasta 8 años de antigüedad: 20 días hábiles por año calendario.\n- Más de 8 años de antigüedad: 25 días hábiles por año calendario."
     },
     {
       "agente": "analista",
       "aporte": "Resultado: 250\nCuenta realizada: 2*15 + 6*20 + 4*25"
-    },
-    {
-      "agente": "investigador",
-      "aporte": "«Los colaboradores con más de 8 años de antigüedad acceden a 25 días hábiles.»\n\n[Fuente: politica_vacaciones.txt]"
     }
   ],
   "validacion": {
@@ -59,15 +47,19 @@
       "investigador",
       "analista"
     ],
+    "dominios_exigidos": [
+      "investigador",
+      "analista"
+    ],
     "criterios": {
       "investigador": "[Fuente:",
       "analista": "Resultado:"
     },
-    "motivo": "Los dos dominios aportaron y ninguno devolvió error: se puede sintetizar."
+    "motivo": "Los dominios exigidos (investigador, analista) aportaron de forma verificable y ninguno devolvió error: se puede sintetizar."
   },
-  "respuesta_final": "A lo largo de los 12 años, al colaborador le correspondieron en total **250 días hábiles** de vacaciones. \n\nEl desglose según la política interna es el siguiente:\n\n* **Primeros 2 años** (menos de 3 años de antigüedad): 2 años × 15 días = **30 días hábiles**\n* **Siguientes 6 años** (entre 3 y 8 años de antigüedad): 6 años × 20 días = **120 días hábiles**\n* **Últimos 4 años** (más de 8 años de antigüedad): 4 años × 25 días = **100 días hábiles**\n\n**Total:** 30 + 120 + 100 = **250 días hábiles**.",
-  "pasos_ejecutados": 3,
+  "respuesta_final": "A lo largo de los 12 años, al colaborador le correspondieron en total **250 días hábiles de vacaciones**.\n\nEl cálculo se desglosa de la siguiente manera según la política de la empresa:\n\n* **2 años con menos de 3 de antigüedad:** 2 × 15 días = 30 días hábiles.\n* **6 años con entre 3 y 8 de antigüedad:** 6 × 20 días = 120 días hábiles.\n* **4 años con más de 8 de antigüedad:** 4 × 25 días = 100 días hábiles.\n\n**Total:** 30 + 120 + 100 = **250 días hábiles**.",
+  "pasos_ejecutados": 2,
   "modelo": "gemini-flash-latest",
   "proveedor": "gemini",
-  "ejecutado_en": "2026-09-28T21:31:59+00:00"
+  "ejecutado_en": "2026-09-28T21:50:36+00:00"
 }

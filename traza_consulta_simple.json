@@ -1,0 +1,51 @@
+{
+  "pregunta": "¿Se puede tomar vacaciones en enero y qué pasa con los días que quedan sin usar al cerrar el año?",
+  "pasos": [
+    {
+      "nodo": "supervisor",
+      "detalle": "decide -> investigador | instrucción: Buscá en la política interna de vacaciones si está permitido tomarlas en el mes de enero y"
+    },
+    {
+      "nodo": "investigador",
+      "detalle": "[investigador] **Vacaciones en enero:**\n«Durante el mes de enero se aplica un régimen especial de guardias mínimas para garantizar la continuidad de los proyectos de clientes, por lo que las solicitudes de vacaciones en ese período est"
+    },
+    {
+      "nodo": "supervisor",
+      "detalle": "decide -> FINISH"
+    },
+    {
+      "nodo": "validacion",
+      "detalle": "suficiente=True | Los dominios exigidos (investigador) aportaron de forma verificable y ninguno devolvió error: se puede sintetizar."
+    },
+    {
+      "nodo": "sintesis",
+      "detalle": "[supervisor] Respecto a tus consultas:\n\n* **Vacaciones en enero:** Sí, podés tomarlas, pero están sujetas a un régimen de guardias mínimas con un cupo máximo de hasta el **25% del equipo** en simultáneo. Además, la solicitud debe pre"
+    }
+  ],
+  "contribuciones": [
+    {
+      "agente": "investigador",
+      "aporte": "**Vacaciones en enero:**\n«Durante el mes de enero se aplica un régimen especial de guardias mínimas para garantizar la continuidad de los proyectos de clientes, por lo que las solicitudes de vacaciones en ese período están sujetas a un cupo máximo por equipo (hasta 25% del equipo de forma simultánea). Las solicitudes para enero deben presentarse antes del 30 de noviembre del año anterior.» [Fuente: politica_vacaciones.txt]\n\n**Días no utilizados al cierre del año:**\n«No se acumulan más de 5 días de un período al siguiente, salvo autorización expresa de Personas por motivos operativos. Los días que superen ese tope al cierre del período se pierden, salvo que exista una justificación de negocio documentada por el líder y aprobada por Personas antes del 31 de diciembre.» [Fuente: politica_vacaciones.txt]"
+    }
+  ],
+  "validacion": {
+    "suficiente": true,
+    "faltantes": [],
+    "dominios_con_aporte": [
+      "investigador"
+    ],
+    "dominios_exigidos": [
+      "investigador"
+    ],
+    "criterios": {
+      "investigador": "[Fuente:",
+      "analista": "Resultado:"
+    },
+    "motivo": "Los dominios exigidos (investigador) aportaron de forma verificable y ninguno devolvió error: se puede sintetizar."
+  },
+  "respuesta_final": "Respecto a tus consultas:\n\n* **Vacaciones en enero:** Sí, podés tomarlas, pero están sujetas a un régimen de guardias mínimas con un cupo máximo de hasta el **25% del equipo** en simultáneo. Además, la solicitud debe presentarse **antes del 30 de noviembre** del año anterior.\n* **Días no utilizados al cierre del año:** Se pueden acumular como máximo **hasta 5 días** para el siguiente período; el resto de los días que superen ese tope se pierden. La única excepción es contar con una justificación de negocio documentada por tu líder y aprobada por Personas antes del 31 de diciembre (o autorización expresa por razones operativas).",
+  "pasos_ejecutados": 1,
+  "modelo": "gemini-flash-latest",
+  "proveedor": "gemini",
+  "ejecutado_en": "2026-09-28T21:50:48+00:00"
+}
